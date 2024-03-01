@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package inscriptions.types.v1;
+
+message Operations {
+  repeated OperationEvent operations = 1;
+}
+
+message OperationEvent {
+  // user operation
+  string from = 1;
+  string to = 2;
+  string value = 3;
+  string calldata = 4;
+
+  // trace information
+  string transaction = 5;
+  uint32 block_index = 6;
+  uint64 nonce = 7;
+}

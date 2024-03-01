@@ -1,0 +1,2 @@
+# substreams-inscriptions
+Substreams Inscriptions

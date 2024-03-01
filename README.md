@@ -30,10 +30,6 @@ graph TD;
   map_operations --> graph_out;
 ```
 
-Here is a quick link to see the graph:
-
-https://mermaid.live/edit#pako:eJx0jk1qxDAMRq9itM6Yod15dmVu0O7iEISt_ND4B0cqhJC7FxJIIXSW-ng8vRVc8gQG-oJ5UF_Ph41KBcxtylSQxxTnOmA2l63ZubnTxAMVkqB5yaR_3vTHlNx3PScpjsxrolG3m5X7_Z0u5l2817RJ-Ph9ns0_eX-iE3vYCBUEKgFHDwZWCzxQIAvGgqcOZWILG1SAwulziQ4MF6EKJHtkeo7YFwzHuP0GAAD__76yZ_w
-
 ### Modules
 
 ```yaml

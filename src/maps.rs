@@ -10,13 +10,14 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
     for transaction in block.transactions() {
         let trx = Hex(&transaction.hash).to_string();
         let calldata = Hex(&transaction.input).to_string();
+        calldata = calldata.
         let source = Hex(&transaction.from).to_string();
         let destination = Hex(&transaction.to).to_string();
         let payload = if let Some(big_int) = &transaction.value {
+            print!("{:?}", &big_int.bytes);
             Hex(&big_int.bytes).to_string()
         } else {
-            //Possible value of zero
-            String::from("undefined")
+            String::from("0")
         };
         if calldata.len() == 0 {
             continue

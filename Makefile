@@ -31,5 +31,5 @@ run:
 #19336559
 .PHONY: gui
 gui:
-	substreams gui graph_out -e avalanche-mainnet.streamingfast.io:443 -s -1000
+	substreams gui map_operations -e avalanche-mainnet.streamingfast.io:443 -s -1000
 

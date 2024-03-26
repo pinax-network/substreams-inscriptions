@@ -11,10 +11,14 @@ message OperationEvent {
   string from = 1;
   string to = 2;
   string value = 3;
-  string calldata = 4;
+  string op = 4;
+  string p = 5;
+  string tick = 6;
+  string amt = 7;
+
 
   // trace information
-  string transaction = 5;
-  uint32 block_index = 6;
-  uint64 nonce = 7;
+  string transaction = 8;
+  uint32 block_index = 9;
+  uint64 nonce = 10;
 }

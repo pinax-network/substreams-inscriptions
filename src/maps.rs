@@ -13,7 +13,11 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         let source = Hex(&transaction.from).to_string();
         let destination = Hex(&transaction.to).to_string();
         let payload = if let Some(big_int) = &transaction.value {
-            Hex(&big_int.bytes).to_string()
+            if Hex(&big_int.bytes).to_string().len() == 0 {
+                String::from("0")
+            } else {
+                Hex(&big_int.bytes).to_string()
+            }
         } else {
             String::from("0")
         };

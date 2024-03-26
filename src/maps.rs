@@ -49,7 +49,6 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         let p_value = if let Some(p_value) = json_data.get("p") {
             // Check if the "p" value is a string
             if let Some(p_str) = p_value.as_str() {
-                log::info!("The value of 'p' is: {}", p_str);
                 Some(p_str)
             } else {
                 None
@@ -61,7 +60,6 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         let op_value = if let Some(op_value) = json_data.get("op") {
             // Check if the "op" value is a string
             if let Some(op_str) = op_value.as_str() {
-                log::info!("The value of 'op' is: {}", op_str);
                 Some(op_str)
             } else {
                 None
@@ -73,7 +71,6 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         let tick_value = if let Some(tick_value) = json_data.get("tick") {
             // Check if the "tick" value is a string
             if let Some(tick_str) = tick_value.as_str() {
-                log::info!("The value of 'tick' is: {}", tick_str);
                 Some(tick_str)
             } else {
                 None
@@ -85,7 +82,6 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         let amt_value = if let Some(amt_value) = json_data.get("amt") {
             // Check if the "amt" value is a string
             if let Some(amt_str) = amt_value.as_str() {
-                log::info!("The value of 'amt' is: {}", amt_str);
                 Some(amt_str)
             } else {
                 None

@@ -22,7 +22,7 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
 
         let utf8_string = match str::from_utf8(&transaction.input) {
             Ok(vec) => vec.to_string(),
-            Err(e) => continue,
+            Err(_e) => continue,
         };
 
         //check if calldata is a data field

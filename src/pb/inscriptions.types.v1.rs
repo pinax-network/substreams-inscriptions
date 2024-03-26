@@ -16,13 +16,19 @@ pub struct OperationEvent {
     #[prost(string, tag="3")]
     pub value: ::prost::alloc::string::String,
     #[prost(string, tag="4")]
-    pub calldata: ::prost::alloc::string::String,
-    /// trace information
+    pub p: ::prost::alloc::string::String,
     #[prost(string, tag="5")]
+    pub op: ::prost::alloc::string::String,
+    #[prost(string, tag="6")]
+    pub tick: ::prost::alloc::string::String,
+    #[prost(string, tag="7")]
+    pub amt: ::prost::alloc::string::String,
+    /// trace information
+    #[prost(string, tag="8")]
     pub transaction: ::prost::alloc::string::String,
-    #[prost(uint32, tag="6")]
+    #[prost(uint32, tag="9")]
     pub block_index: u32,
-    #[prost(uint64, tag="7")]
+    #[prost(uint64, tag="10")]
     pub nonce: u64,
 }
 // @@protoc_insertion_point(module)

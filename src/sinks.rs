@@ -1,7 +1,6 @@
 use substreams::errors::Error;
 use substreams_entity_change::pb::entity::EntityChanges;
 use substreams_entity_change::tables::Tables;
-
 use crate::pb::inscriptions::types::v1::Operations;
 
 #[substreams::handlers::map]
@@ -17,6 +16,10 @@ pub fn graph_out(operations: Operations) -> Result<EntityChanges, Error> {
             .set("from", event.from)
             .set("to", event.to)
             .set("value", event.value)
+            .set("p", event.p)
+            .set("op", event.op)
+            .set("tick", event.tick)
+            .set("amt", event.amt)
             // // trace information
             .set("transaction", event.transaction);
     }

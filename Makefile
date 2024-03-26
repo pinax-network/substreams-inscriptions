@@ -27,9 +27,9 @@ info:
 
 .PHONY: run
 run:
-	substreams run map_operations -e eth.substreams.pinax.network:443 -s 19336559
-
+	substreams run map_operations -e avalanche-mainnet.streamingfast.io:443 -s -1000
+#19336559
 .PHONY: gui
 gui:
-	substreams gui map_operations -e eth.substreams.pinax.network:443 -s -1000
+	substreams gui graph_out -e avalanche-mainnet.streamingfast.io:443 -s -1000
 

@@ -13,11 +13,12 @@ pub fn graph_out(operations: Operations) -> Result<EntityChanges, Error> {
         let id = format!("{}-{}-{}", block.number, transaction.index, transaction.hash);
 
         let row = tables
-            .create_row("Mint", id)
+            .create_row("Operation", id)
             // block information
             .set("block_hash", block.hash)
             .set("block_number", block.number)
             .set("block_timestamp", block.timestamp)
+            .set("block_parent_hash", block.parent_hash)
 
             // trace information
             .set("transaction_hash", transaction.hash)
@@ -26,7 +27,7 @@ pub fn graph_out(operations: Operations) -> Result<EntityChanges, Error> {
             .set("from", transaction.from)
             .set("to", transaction.to);
 
-
+        // Operation specific fields
         match event.operation.unwrap() {
             operation_event::Operation::Mint(op) => {
                 row

@@ -2,23 +2,56 @@ syntax = "proto3";
 
 package inscriptions.types.v1;
 
+import "google/protobuf/timestamp.proto";
+
 message Operations {
   repeated OperationEvent operations = 1;
 }
 
 message OperationEvent {
-  // user operation
-  string from = 1;
-  string to = 2;
-  string value = 3;
-  string op = 4;
-  string p = 5;
-  string tick = 6;
-  string amt = 7;
+  Block block = 1;
+  Transaction transaction = 2;
+  oneof operation {
+    DeployOp deploy = 3;
+    MintOp mint = 4;
+    TransferOp transfer = 5;
+  };
+}
 
+message Block {
+  uint64 number = 1;
+  string hash = 2;
+  int64 timestamp = 3; // seconds
+}
 
-  // trace information
-  string transaction = 8;
-  uint32 block_index = 9;
-  uint64 nonce = 10;
+message Transaction {
+  string hash = 1;
+  uint32 index = 2;
+  string from = 3;
+  string to = 4;
+  string value = 5;
+  uint64 nonce = 6;
+  string input = 7;
+}
+
+message TransferOp {
+  string p = 1;
+  string op = 2; // transfer
+  string tick = 3;
+  uint64 amt = 4;
+}
+
+message MintOp {
+  string p = 1;
+  string op = 2; // mint
+  string tick = 3;
+  uint64 amt = 4;
+}
+
+message DeployOp {
+  string p = 1;
+  string op = 2; // deploy
+  string tick = 3;
+  uint64 max = 4;
+  uint64 lim = 5;
 }

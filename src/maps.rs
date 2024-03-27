@@ -14,6 +14,7 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         number: block.number,
         hash: Hex(&block.hash).to_string(),
         timestamp: block.timestamp().seconds,
+        parent_hash: Hex(block.clone().header.unwrap().parent_hash).to_string()
     };
 
     for transaction in block.transactions() {

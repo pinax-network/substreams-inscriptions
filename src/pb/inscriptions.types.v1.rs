@@ -35,8 +35,10 @@ pub struct Block {
     pub number: u64,
     #[prost(string, tag="2")]
     pub hash: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub parent_hash: ::prost::alloc::string::String,
     /// seconds
-    #[prost(int64, tag="3")]
+    #[prost(int64, tag="4")]
     pub timestamp: i64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

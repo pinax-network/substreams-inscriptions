@@ -21,7 +21,8 @@ message OperationEvent {
 message Block {
   uint64 number = 1;
   string hash = 2;
-  int64 timestamp = 3; // seconds
+  string parent_hash = 3;
+  int64 timestamp = 4; // seconds
 }
 
 message Transaction {

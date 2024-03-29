@@ -8,6 +8,15 @@ message Operations {
   repeated OperationEvent operations = 1;
 }
 
+message Balances {
+  repeated Balance balances = 1;
+}
+
+message Balance {
+  string key = 1;
+  int64 balance = 2;
+}
+
 message OperationEvent {
   Block block = 1;
   Transaction transaction = 2;
@@ -37,22 +46,22 @@ message Transaction {
 
 message TransferOp {
   string p = 1;
-  string op = 2; // transfer
-  string tick = 3;
+  string tick = 2;
+  string op = 3; // transfer
   int64 amt = 4;
 }
 
 message MintOp {
   string p = 1;
-  string op = 2; // mint
-  string tick = 3;
+  string tick = 2;
+  string op = 3; // mint
   int64 amt = 4;
 }
 
 message DeployOp {
   string p = 1;
-  string op = 2; // deploy
-  string tick = 3;
+  string tick = 2;
+  string op = 3; // deploy
   int64 max = 4;
   int64 lim = 5;
 }

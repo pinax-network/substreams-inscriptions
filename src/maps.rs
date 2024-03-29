@@ -1,13 +1,17 @@
 use crate::helpers::{json_to_string, json_to_i64};
-use crate::pb::inscriptions::types::v1::{DeployOp, TransferOp};
+use crate::keys::balance_key;
+use crate::pb::inscriptions::types::v1::{Balance, Balances, DeployOp, TransferOp};
 use crate::pb::inscriptions::types::v1::{Block as _Block, MintOp, Operations, OperationEvent, Transaction as _Transaction, operation_event::Operation};
+use crate::stores::{get_balance, get_p, get_tick};
 use substreams::errors::Error;
+use substreams::store::{StoreGetInt64, StoreGet};
 use substreams::{log, Hex};
 use substreams_ethereum::pb::eth::v2::Block;
+use std::collections::HashMap;
 use std::str;
 
 #[substreams::handlers::map]
-pub fn map_operations(block: Block) -> Result<Operations, Error> {
+pub fn map_raw_operations(block: Block) -> Result<Operations, Error> {
     let mut operations = vec![];
 
     let _block = _Block {
@@ -124,6 +128,98 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         }
     }
 
+    log::debug!("Operations: {:?}", operations.len());
+    Ok(Operations {
+        operations
+    })
+}
+
+
+#[substreams::handlers::map]
+pub fn map_balances(raw_operations: Operations, store: StoreGetInt64) -> Result<Balances, Error> {
+    let mut balances = vec![];
+
+    for event in raw_operations.operations {
+        let transaction = event.clone().transaction.unwrap();
+        let operation = event.clone().operation.unwrap();
+        let tick = get_tick(operation.clone());
+        let p = get_p(operation.clone());
+
+        // Operation specific fields
+        match operation.clone() {
+            Operation::Mint(_op) => {
+                let key = balance_key(p.clone(), tick.clone(), transaction.from.clone());
+                let balance = store.get_last(key.clone()).unwrap_or(0);
+                balances.push(Balance {
+                    key,
+                    balance
+                });
+            },
+            Operation::Transfer(_op) => {
+                let key = balance_key(p.clone(), tick.clone(), transaction.from.clone());
+                let balance = store.get_last(key.clone()).unwrap_or(0);
+                balances.push(Balance {
+                    key,
+                    balance
+                });
+            },
+            Operation::Deploy(_op) => {
+                // no-op
+            }
+        };
+    }
+    Ok(Balances {
+        balances
+    })
+}
+
+
+#[substreams::handlers::map]
+pub fn map_operations(raw_operations: Operations, map_balances: Balances) -> Result<Operations, Error> {
+    let mut operations = vec![];
+    let mut balances: HashMap<String, i64> = HashMap::new();
+
+    // load initial balances from previous block
+    for balance in map_balances.balances {
+        balances.insert(balance.key, balance.balance);
+    }
+
+    for event in raw_operations.operations {
+        let transaction = event.clone().transaction.unwrap();
+        let operation = event.clone().operation.unwrap();
+        let tick = get_tick(operation.clone());
+        let p = get_p(operation.clone());
+
+        // Operation specific fields
+        match operation.clone() {
+            Operation::Mint(_op) => {
+                // Validation
+                // a.1. check if max supply is not reached
+                // a.2. check if lim is not reached
+
+                // TO-DO
+                operations.push(event);
+            },
+            Operation::Transfer(op) => {
+                let key = balance_key(p.clone(), tick.clone(), transaction.from.clone());
+                let balance = get_balance(balances.clone(), key.clone());
+                // Validation
+                // b.1. check if from has enough balance
+                // b.2. deduct balance
+                if balance >= op.amt {
+                    operations.push(event);
+                    balances.insert(key, balance - op.amt);
+                }
+            },
+            Operation::Deploy(_op) => {
+                // Validation
+                // c.1. check if p+tick does not exists
+
+                // TO-DO
+                operations.push(event);
+            }
+        };
+    }
     log::debug!("Operations: {:?}", operations.len());
     Ok(Operations {
         operations

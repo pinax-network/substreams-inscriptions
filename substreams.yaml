@@ -20,20 +20,35 @@ protobuf:
     - ./proto/v1
 
 modules:
-  - name: map_operations
+  - name: map_raw_operations
+    initialBlock: 38209552 # for Avalanche
     kind: map
-    doc: Extracts 'Operations' events from the block
+    doc: Extracts raw Inscription operation events from the block
     inputs:
       - source: sf.ethereum.type.v2.Block
     output:
       type: proto:inscriptions.types.v1.Operations
 
-  - name: graph_out
+  - name: map_balances
+    initialBlock: 38209552 # for Avalanche
     kind: map
+    doc: Extracts existing balances from the store based on raw Inscription operation events
     inputs:
-      - map: map_operations
+      - map: map_raw_operations
+      - store: store_balances
+        mode: get
     output:
-      type: proto:sf.substreams.sink.entity.v1.EntityChanges
+      type: proto:inscriptions.types.v1.Balances
+
+  - name: map_operations
+    kind: map
+    initialBlock: 38209552 # for Avalanche
+    doc: Validates Inscriptions from the raw operation events
+    inputs:
+      - map: map_raw_operations
+      - map: map_balances
+    output:
+      type: proto:inscriptions.types.v1.Operations
 
   - name: store_balances
     kind: store
@@ -41,4 +56,13 @@ modules:
     updatePolicy: add
     valueType: int64
     inputs:
-      - map: map_operations
+      - map: map_raw_operations
+
+  - name: graph_out
+    kind: map
+    inputs:
+      - map: map_raw_operations
+    output:
+      type: proto:sf.substreams.sink.entity.v1.EntityChanges
+
+network: avalanche

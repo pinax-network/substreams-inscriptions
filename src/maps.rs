@@ -1,4 +1,4 @@
-use crate::helpers::{json_to_string, json_to_u64};
+use crate::helpers::{json_to_string, json_to_i64};
 use crate::pb::inscriptions::types::v1::{DeployOp, TransferOp};
 use crate::pb::inscriptions::types::v1::{Block as _Block, MintOp, Operations, OperationEvent, Transaction as _Transaction, operation_event::Operation};
 use substreams::errors::Error;
@@ -77,7 +77,7 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
                 p: p.clone(),
                 op,
                 tick,
-                amt: json_to_u64(&json_data, "amt").unwrap(),
+                amt: json_to_i64(&json_data, "amt").unwrap(),
             };
 
             operations.push(OperationEvent {
@@ -94,7 +94,7 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
                 p,
                 op,
                 tick,
-                amt: json_to_u64(&json_data, "amt").unwrap(),
+                amt: json_to_i64(&json_data, "amt").unwrap(),
             };
 
             operations.push(OperationEvent {
@@ -111,8 +111,8 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
                 p,
                 op,
                 tick,
-                max: json_to_u64(&json_data, "max").unwrap(),
-                lim: json_to_u64(&json_data, "lim").unwrap(),
+                max: json_to_i64(&json_data, "max").unwrap(),
+                lim: json_to_i64(&json_data, "lim").unwrap(),
             };
 
             operations.push(OperationEvent {

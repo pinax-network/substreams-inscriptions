@@ -39,20 +39,20 @@ message TransferOp {
   string p = 1;
   string op = 2; // transfer
   string tick = 3;
-  uint64 amt = 4;
+  int64 amt = 4;
 }
 
 message MintOp {
   string p = 1;
   string op = 2; // mint
   string tick = 3;
-  uint64 amt = 4;
+  int64 amt = 4;
 }
 
 message DeployOp {
   string p = 1;
   string op = 2; // deploy
   string tick = 3;
-  uint64 max = 4;
-  uint64 lim = 5;
+  int64 max = 4;
+  int64 lim = 5;
 }

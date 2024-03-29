@@ -34,3 +34,11 @@ modules:
       - map: map_operations
     output:
       type: proto:sf.substreams.sink.entity.v1.EntityChanges
+
+  - name: store_balances
+    kind: store
+    initialBlock: 38209552 # for Avalanche
+    updatePolicy: add
+    valueType: int64
+    inputs:
+      - map: map_operations

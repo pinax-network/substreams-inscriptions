@@ -69,8 +69,8 @@ pub struct TransferOp {
     pub op: ::prost::alloc::string::String,
     #[prost(string, tag="3")]
     pub tick: ::prost::alloc::string::String,
-    #[prost(uint64, tag="4")]
-    pub amt: u64,
+    #[prost(int64, tag="4")]
+    pub amt: i64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -82,8 +82,8 @@ pub struct MintOp {
     pub op: ::prost::alloc::string::String,
     #[prost(string, tag="3")]
     pub tick: ::prost::alloc::string::String,
-    #[prost(uint64, tag="4")]
-    pub amt: u64,
+    #[prost(int64, tag="4")]
+    pub amt: i64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -95,9 +95,9 @@ pub struct DeployOp {
     pub op: ::prost::alloc::string::String,
     #[prost(string, tag="3")]
     pub tick: ::prost::alloc::string::String,
-    #[prost(uint64, tag="4")]
-    pub max: u64,
-    #[prost(uint64, tag="5")]
-    pub lim: u64,
+    #[prost(int64, tag="4")]
+    pub max: i64,
+    #[prost(int64, tag="5")]
+    pub lim: i64,
 }
 // @@protoc_insertion_point(module)

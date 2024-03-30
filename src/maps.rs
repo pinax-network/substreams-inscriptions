@@ -1,4 +1,4 @@
-use crate::helpers::{json_to_string, json_to_i64};
+use crate::helpers::{json_to_i64, json_to_string, parse_value};
 use crate::pb::inscriptions::types::v1::{DeployOp, TransferOp};
 use crate::pb::inscriptions::types::v1::{Block as _Block, MintOp, Operations, OperationEvent, Transaction as _Transaction, operation_event::Operation};
 use substreams::errors::Error;
@@ -23,16 +23,7 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
             continue;
         }
 
-        // TO-DO: move to helpers.rs
-        let value = if let Some(big_int) = &transaction.value {
-            if Hex(&big_int.bytes).to_string().len() == 0 {
-                String::from("0")
-            } else {
-                Hex(&big_int.bytes).to_string()
-            }
-        } else {
-            String::from("0")
-        };
+        let value = parse_value(&transaction.value);
 
         // TO-DO: move to helpers.rs
         // verify calldata value is valid UTF8
@@ -79,11 +70,16 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
 
         // mint
         if op == "mint" {
+            let amt = json_to_i64(&json_data, "amt");
+            if amt.is_none() {
+                continue;
+            }
+
             let operation = MintOp {
                 p: p.clone(),
                 op,
                 tick,
-                amt: json_to_i64(&json_data, "amt").unwrap(),
+                amt: amt.unwrap(),
             };
 
             operations.push(OperationEvent {
@@ -96,11 +92,15 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
 
         // transfer
         if op == "transfer" {
+            let amt = json_to_i64(&json_data, "amt");
+            if amt.is_none() {
+                continue;
+            }
             let operation = TransferOp {
                 p,
                 op,
                 tick,
-                amt: json_to_i64(&json_data, "amt").unwrap(),
+                amt: amt.unwrap(),
             };
 
             operations.push(OperationEvent {
@@ -113,12 +113,17 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
 
         // deploy
         if op == "deploy" {
+            let max = json_to_i64(&json_data, "max");
+            let lim = json_to_i64(&json_data, "lim");
+            if max.is_none() || lim.is_none() {
+                continue;
+            }
             let operation = DeployOp {
                 p,
                 op,
                 tick,
-                max: json_to_i64(&json_data, "max").unwrap(),
-                lim: json_to_i64(&json_data, "lim").unwrap(),
+                max: max.unwrap(),
+                lim: lim.unwrap(),
             };
 
             operations.push(OperationEvent {

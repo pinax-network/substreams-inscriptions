@@ -1,5 +1,8 @@
 use std::str;
 
+use substreams::Hex;
+use substreams_ethereum::pb::eth::v2::BigInt;
+
 pub fn json_to_i64(value: &serde_json::Value, index: &str) -> Option<i64> {
     if let Some(value) = value.get(index) {
         if let Some(str) = value.as_str() {
@@ -21,6 +24,19 @@ pub fn json_to_string(value: &serde_json::Value, index: &str) -> String {
             }
         },
         None => "".to_string(),
+    }
+}
+
+pub fn parse_value(value: &Option<BigInt>) -> String {
+    match value {
+        Some(big_int) => {
+            if Hex(&big_int.bytes).to_string().len() == 0 {
+                String::from("0")
+            } else {
+                Hex(&big_int.bytes).to_string()
+            }
+        },
+        None => String::from("0")
     }
 }
 

@@ -48,12 +48,8 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         };
 
         // TO-DO: move to helpers.rs
-        if input.len() >= 4 {
-            if &input[0..4] == "data" {
-                //
-            } else {
-                continue
-            };
+        if !input.starts_with("data") {
+            continue;
         }
 
         // parse json

@@ -1,3 +1,5 @@
-pub fn balance_key(p: String, tick: String, address: String) -> String {
-    format!("{}-{}-{}", p, tick, address)
+use crate::pb::inscriptions::types::v1::Transaction;
+
+pub fn to_key(transaction: &Transaction) -> String {
+    format!("{}-{}", transaction.hash, transaction.index)
 }

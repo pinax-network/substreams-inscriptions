@@ -30,10 +30,9 @@ CREATE TABLE IF NOT EXISTS transfer_events
     from                String,
     to                  String,
     p                   String,
-    op                  String,
     tick                String,
-    amt                 Int64,
-    p                   String
+    op                  String,
+    amt                 Int64
 )
     ENGINE = ReplacingMergeTree()
         PRIMARY KEY (id)
@@ -52,10 +51,9 @@ CREATE TABLE IF NOT EXISTS mint_events
     from                String,
     to                  String,
     p                   String,
-    op                  String,
     tick                String,
-    amt                 Int64,
-    p                   String
+    op                  String,
+    amt                 Int64
 )
     ENGINE = ReplacingMergeTree()
         PRIMARY KEY (id)
@@ -74,8 +72,8 @@ CREATE TABLE IF NOT EXISTS deploy_events
     from                String,
     to                  String,
     p                   String,
-    op                  String,
     tick                String,
+    op                  String,
     max                 Int64,
     lim                 Int64
 )

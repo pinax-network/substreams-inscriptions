@@ -32,24 +32,24 @@ pub fn db_out(operations: Operations) -> Result<DatabaseChanges, Error> {
                 row.table = "mint_events".to_string();
                 row
                     .change("p", ("", op.p.as_str()))
-                    .change("op", ("", op.op.as_str()))
                     .change("tick", ("", op.tick.as_str()))
+                    .change("op", ("", op.op.as_str()))
                     .change("amt", ("", op.amt.as_string().as_str()))
             },
             operation_event::Operation::Transfer(op) => {
                 row.table = "transfer_events".to_string();
                 row
                     .change("p", ("", op.p.as_str()))
-                    .change("op", ("", op.op.as_str()))
                     .change("tick", ("", op.tick.as_str()))
+                    .change("op", ("", op.op.as_str()))
                     .change("amt", ("", op.amt.as_string().as_str()))
             },
             operation_event::Operation::Deploy(op) => {
                 row.table = "deploy_events".to_string();
                 row
                     .change("p", ("", op.p.as_str()))
-                    .change("op", ("", op.op.as_str()))
                     .change("tick", ("", op.tick.as_str()))
+                    .change("op", ("", op.op.as_str()))
                     .change("max", ("", op.max.as_string().as_str()))
                     .change("lim", ("", op.lim.as_string().as_str()))
             }

@@ -25,11 +25,15 @@ graph:
 info:
 	substreams info
 
-.PHONY: run
-run:
-	substreams run map_operations -e avalanche.substreams.pinax.network:443 -s 38209552 -t +10000
-
 .PHONY: gui
 gui:
-	substreams gui db_out -e avalanche.substreams.pinax.network:443 -s 38209552 -t +10000
+	substreams gui db_out -e avalanche.substreams.pinax.network:443 -s 38209552
+
+.PHONY: setup
+setup:
+	substreams-sink-sql setup clickhouse://default:@localhost:9000/default substreams.yaml
+
+.PHONY: run
+run:
+	substreams-sink-sql run clickhouse://default:@localhost:9000/default substreams.yaml -e avalanche.substreams.pinax.network:443 38209552: --final-blocks-only --undo-buffer-size 100 --flush-interval 10000
 

@@ -51,6 +51,7 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         if !input.starts_with("data") {
             continue;
         }
+        log::debug!("Input: {:?} {:?}", transaction.hash, input);
 
         // parse json
         // TO-DO: move to helpers.rs

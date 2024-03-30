@@ -9,6 +9,10 @@ all:
 build:
 	cargo build --target wasm32-unknown-unknown --release
 
+.PHONY: test
+test:
+	cargo test
+
 .PHONY: protogen
 protogen:
 	substreams protogen --exclude-paths sf/substreams,google
@@ -27,7 +31,7 @@ info:
 
 .PHONY: gui
 gui:
-	substreams gui db_out -e avalanche.substreams.pinax.network:443 -s 38209552
+	substreams gui db_out -e avalanche.substreams.pinax.network:443 -s 38927848
 
 .PHONY: setup
 setup:

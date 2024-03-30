@@ -39,5 +39,5 @@ setup:
 
 .PHONY: run
 run:
-	substreams-sink-sql run clickhouse://default:@localhost:9000/default substreams.yaml -e avalanche.substreams.pinax.network:443 38209552: --final-blocks-only --undo-buffer-size 100 --flush-interval 10000
+	substreams-sink-sql run clickhouse://default:@localhost:9000/default substreams.yaml -e avalanche.substreams.pinax.network:443 38209552: --final-blocks-only --undo-buffer-size 100 --flush-interval 10000 --on-module-hash-mistmatch warn
 

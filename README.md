@@ -24,16 +24,10 @@ $ make gui
 
 ```mermaid
 graph TD;
-  map_raw_operations[map: map_raw_operations];
-  sf.ethereum.type.v2.Block[source: sf.ethereum.type.v2.Block] --> map_raw_operations;
-  map_balances[map: map_balances];
-  map_raw_operations --> map_balances;
-  store_balances --> map_balances;
   map_operations[map: map_operations];
-  map_raw_operations --> map_operations;
-  map_balances --> map_operations;
-  store_balances[store: store_balances];
-  map_raw_operations --> store_balances;
+  sf.ethereum.type.v2.Block[source: sf.ethereum.type.v2.Block] --> map_operations;
+  db_out[map: db_out];
+  map_operations --> db_out;
 ```
 
 ### Modules
@@ -47,13 +41,34 @@ Modules:
 Name: map_operations
 Initial block: 0
 Kind: map
-Output Type: proto:inscriptions.types.v1.OperationsEvent
-Hash: 0e76f8667de427579ecc0a062b9362f2da888d77
-Doc:  Extracts 'Operations' events from the block
+Input: source: sf.ethereum.type.v2.Block
+Output Type: proto:inscriptions.types.v1.Operations
+Hash: 521f8cba3fec40e7efa55971262ecb3ed5933d6b
+Doc:  Extracts Inscription operation events from the block
 
-Name: graph_out
+Name: db_out
 Initial block: 0
 Kind: map
-Output Type: proto:sf.substreams.sink.entity.v1.EntityChanges
-Hash: 9b4c9974527d76debb932e5412679f3010079731
+Input: map: map_operations
+Output Type: proto:sf.substreams.sink.database.v1.DatabaseChanges
+Hash: a485e5e3b9b529a86a35d0c0ef05ed992dcf2768
+
+Network: avalanche
+
+Sink config:
+----
+type: sf.substreams.sink.sql.v1.Service
+configs:
+- schema: (2295 bytes) MD5SUM: 66f73da2b832ecf270e501fa1fc2305a [LOADED_FILE]
+- dbt_config:
+  - files: (empty) [ZIPPED_FOLDER]
+  - run_interval_seconds: 0
+  - enabled: false
+- hasura_frontend:
+  - enabled: false
+- postgraphile_frontend:
+  - enabled: false
+- engine: 2
+- rest_frontend:
+  - enabled: false
 ```

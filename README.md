@@ -24,10 +24,16 @@ $ make gui
 
 ```mermaid
 graph TD;
+  map_raw_operations[map: map_raw_operations];
+  sf.ethereum.type.v2.Block[source: sf.ethereum.type.v2.Block] --> map_raw_operations;
+  map_balances[map: map_balances];
+  map_raw_operations --> map_balances;
+  store_balances --> map_balances;
   map_operations[map: map_operations];
-  sf.ethereum.type.v2.Block[source: sf.ethereum.type.v2.Block] --> map_operations;
-  graph_out[map: graph_out];
-  map_operations --> graph_out;
+  map_raw_operations --> map_operations;
+  map_balances --> map_operations;
+  store_balances[store: store_balances];
+  map_raw_operations --> store_balances;
 ```
 
 ### Modules

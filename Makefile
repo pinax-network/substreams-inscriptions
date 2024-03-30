@@ -31,5 +31,5 @@ run:
 
 .PHONY: gui
 gui:
-	substreams gui map_operations -e avalanche.substreams.pinax.network:443 -s 38209552 -t +10000
+	substreams gui db_out -e avalanche.substreams.pinax.network:443 -s 38209552 -t +10000
 

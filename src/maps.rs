@@ -1,9 +1,9 @@
-use crate::helpers::{json_to_string, json_to_u64};
+use crate::helpers::{json_to_string, json_to_i64};
 use crate::pb::inscriptions::types::v1::{DeployOp, TransferOp};
 use crate::pb::inscriptions::types::v1::{Block as _Block, MintOp, Operations, OperationEvent, Transaction as _Transaction, operation_event::Operation};
 use substreams::errors::Error;
 use substreams::{log, Hex};
-use substreams_ethereum::pb::eth::v2::Block;
+use substreams_ethereum::pb::eth::v2::{Block, TransactionTraceStatus};
 use std::str;
 
 #[substreams::handlers::map]
@@ -18,6 +18,11 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
     };
 
     for transaction in block.transactions() {
+        // Transaction must be successful
+        if transaction.status != TransactionTraceStatus::Succeeded as i32 {
+            continue;
+        }
+
         // TO-DO: move to helpers.rs
         let value = if let Some(big_int) = &transaction.value {
             if Hex(&big_int.bytes).to_string().len() == 0 {
@@ -36,6 +41,11 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
             Err(_e) => continue,
         };
 
+        // ignore empty calldata
+        if input.len() == 0 {
+            continue
+        }
+
         let _transaction = _Transaction {
             hash: Hex(&transaction.hash).to_string(),
             index: transaction.index,
@@ -45,11 +55,6 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
             nonce: transaction.nonce,
             input: input.clone(),
         };
-
-        // check if calldata is a data field
-        if transaction.input.len() == 0 {
-            continue
-        }
 
         // TO-DO: move to helpers.rs
         if input.len() >= 4 {
@@ -61,6 +66,7 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
         }
 
         // parse json
+        // TO-DO: move to helpers.rs
         let json_str = input.splitn(2, ',').nth(1).unwrap_or_default();
         let json_data = match serde_json::from_str(json_str) {
             Ok(data) => data,
@@ -77,7 +83,7 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
                 p: p.clone(),
                 op,
                 tick,
-                amt: json_to_u64(&json_data, "amt").unwrap(),
+                amt: json_to_i64(&json_data, "amt").unwrap(),
             };
 
             operations.push(OperationEvent {
@@ -94,7 +100,7 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
                 p,
                 op,
                 tick,
-                amt: json_to_u64(&json_data, "amt").unwrap(),
+                amt: json_to_i64(&json_data, "amt").unwrap(),
             };
 
             operations.push(OperationEvent {
@@ -111,8 +117,8 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
                 p,
                 op,
                 tick,
-                max: json_to_u64(&json_data, "max").unwrap(),
-                lim: json_to_u64(&json_data, "lim").unwrap(),
+                max: json_to_i64(&json_data, "max").unwrap(),
+                lim: json_to_i64(&json_data, "lim").unwrap(),
             };
 
             operations.push(OperationEvent {

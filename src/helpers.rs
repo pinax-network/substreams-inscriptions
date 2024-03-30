@@ -1,9 +1,9 @@
 use std::str;
 
-pub fn json_to_u64(value: &serde_json::Value, index: &str) -> Option<u64> {
+pub fn json_to_i64(value: &serde_json::Value, index: &str) -> Option<i64> {
     if let Some(value) = value.get(index) {
         if let Some(str) = value.as_str() {
-            Some(str.parse::<u64>().unwrap())
+            Some(str.parse::<i64>().unwrap())
         } else {
             None
         }
@@ -46,7 +46,7 @@ mod tests {
     }
 
     #[test]
-    fn json_to_u64() {
+    fn json_to_i64() {
         let str = "{
             \"amt\": \"100\"
         }";
@@ -54,7 +54,7 @@ mod tests {
 
         match data {
             Ok(data) => {
-                assert_eq!(super::json_to_u64(&data, "amt").unwrap(), 100);
+                assert_eq!(super::json_to_i64(&data, "amt").unwrap(), 100);
             },
             Err(e) => {
                 panic!("Error: {}", e);

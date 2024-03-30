@@ -7,6 +7,20 @@ pub struct Operations {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Balances {
+    #[prost(message, repeated, tag="1")]
+    pub balances: ::prost::alloc::vec::Vec<Balance>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Balance {
+    #[prost(string, tag="1")]
+    pub key: ::prost::alloc::string::String,
+    #[prost(int64, tag="2")]
+    pub balance: i64,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct OperationEvent {
     #[prost(message, optional, tag="1")]
     pub block: ::core::option::Option<Block>,
@@ -64,40 +78,40 @@ pub struct Transaction {
 pub struct TransferOp {
     #[prost(string, tag="1")]
     pub p: ::prost::alloc::string::String,
-    /// transfer
     #[prost(string, tag="2")]
-    pub op: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
     pub tick: ::prost::alloc::string::String,
-    #[prost(uint64, tag="4")]
-    pub amt: u64,
+    /// transfer
+    #[prost(string, tag="3")]
+    pub op: ::prost::alloc::string::String,
+    #[prost(int64, tag="4")]
+    pub amt: i64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MintOp {
     #[prost(string, tag="1")]
     pub p: ::prost::alloc::string::String,
-    /// mint
     #[prost(string, tag="2")]
-    pub op: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
     pub tick: ::prost::alloc::string::String,
-    #[prost(uint64, tag="4")]
-    pub amt: u64,
+    /// mint
+    #[prost(string, tag="3")]
+    pub op: ::prost::alloc::string::String,
+    #[prost(int64, tag="4")]
+    pub amt: i64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeployOp {
     #[prost(string, tag="1")]
     pub p: ::prost::alloc::string::String,
-    /// deploy
     #[prost(string, tag="2")]
-    pub op: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
     pub tick: ::prost::alloc::string::String,
-    #[prost(uint64, tag="4")]
-    pub max: u64,
-    #[prost(uint64, tag="5")]
-    pub lim: u64,
+    /// deploy
+    #[prost(string, tag="3")]
+    pub op: ::prost::alloc::string::String,
+    #[prost(int64, tag="4")]
+    pub max: i64,
+    #[prost(int64, tag="5")]
+    pub lim: i64,
 }
 // @@protoc_insertion_point(module)

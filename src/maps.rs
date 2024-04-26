@@ -1,10 +1,9 @@
-use crate::helpers::{json_to_i64, json_to_string, parse_value};
+use crate::helpers::{json_to_i64, parse_value, get_mime_type, validate_data, validate_utf8};
 use crate::pb::inscriptions::types::v1::{DeployOp, TransferOp};
 use crate::pb::inscriptions::types::v1::{Block as _Block, MintOp, Operations, OperationEvent, Transaction as _Transaction, operation_event::Operation};
 use substreams::errors::Error;
 use substreams::{log, Hex};
 use substreams_ethereum::pb::eth::v2::{Block, TransactionTraceStatus};
-use std::str;
 
 #[substreams::handlers::map]
 pub fn map_operations(block: Block) -> Result<Operations, Error> {
@@ -25,17 +24,11 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
 
         let value = parse_value(&transaction.value);
 
-        // TO-DO: move to helpers.rs
-        // verify calldata value is valid UTF8
-        let input = match str::from_utf8(&transaction.input) {
+        // Verify calldata value is valid UTF8
+        let input = match validate_utf8(&transaction.input) {
             Ok(vec) => vec.to_string(),
             Err(_e) => continue,
         };
-
-        // ignore empty calldata
-        if input.len() == 0 {
-            continue
-        }
 
         let _transaction = _Transaction {
             hash: Hex(&transaction.hash).to_string(),
@@ -47,23 +40,25 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
             input: input.clone(),
         };
 
-        // TO-DO: move to helpers.rs
-        if !input.starts_with("data") {
-            continue;
-        }
+        //Verify data is valid and fetch mime type
 
-        // parse json
-        // TO-DO: move to helpers.rs
-        let json_str = input.splitn(2, ',').nth(1).unwrap_or_default();
-        let json_data = match serde_json::from_str(json_str) {
-            Ok(data) => data,
+        let mime_data = get_mime_type(&input);
+        let (media_type, mime_subtype, mime_type) = match mime_data {
+            Ok(mime_data) => mime_data,
             Err(_e) => continue,
         };
 
-        let tick = json_to_string(&json_data, "tick");
-        let op = json_to_string(&json_data, "op");
-        let p = json_to_string(&json_data, "p");
+        println!("Media Type: {}", media_type);
+        println!("Mime Subtype: {}", mime_subtype);
+        println!("Mime Type: {}", mime_type);
 
+        // Validate data
+
+        let data = validate_data(input);
+        let (p, op, tick, json_data) = match data {
+            Ok(data) => data,
+            Err(_e) => continue,
+        };
         // mint
         if op == "mint" {
             let amt = json_to_i64(&json_data, "amt");

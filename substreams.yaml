@@ -6,8 +6,8 @@ package:
   doc: Inscriptions
 
 imports:
-  database_change: https://github.com/streamingfast/substreams-sink-database-changes/releases/download/v1.3.1/substreams-database-change-v1.3.1.spkg
-  sql: https://github.com/streamingfast/substreams-sink-sql/releases/download/protodefs-v1.0.7/substreams-sink-sql-protodefs-v1.0.7.spkg
+  database_change: https://github.com/streamingfast/substreams-database-change/releases/download/v1.3.1/substreams-database-change-v1.3.1.spkg
+  sql: https://github.com/streamingfast/substreams-sink-sql/releases/download/protodefs-v1.0.3/substreams-sink-sql-protodefs-v1.0.3.spkg
 
 binaries:
   default:
@@ -44,9 +44,7 @@ sink:
     engine: clickhouse
     postgraphile_frontend:
       enabled: false
-    hasura_frontend:
-      enabled: false
-    rest_frontend:
+    pgweb_frontend:
       enabled: false
 
 network: avalanche

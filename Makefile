@@ -31,7 +31,11 @@ info:
 
 .PHONY: gui
 gui:
-	substreams gui db_out -e avalanche.substreams.pinax.network:443 -s 38927848
+	substreams gui map_operations -e avalanche.substreams.pinax.network:443 -s 38927848
+
+.PHONY: gui-eos
+gui-eos:
+	substreams gui map_operations -e eosevm.substreams.pinax.network:443 -s 23071495
 
 .PHONY: setup
 setup:

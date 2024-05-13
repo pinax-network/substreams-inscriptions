@@ -72,6 +72,8 @@ pub struct Transaction {
     pub nonce: u64,
     #[prost(string, tag="7")]
     pub input: ::prost::alloc::string::String,
+    #[prost(string, tag="8")]
+    pub mime_type: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

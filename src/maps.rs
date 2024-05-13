@@ -1,19 +1,13 @@
-use crate::helpers::{get_mime_type, json_to_i64, parse_value, validate_data, validate_transaction, validate_utf8};
-use crate::api::get_request;
+use crate::helpers::{json_to_i64, json_to_string, parse_input, parse_json_data, parse_mime_type, parse_value};
 use crate::pb::inscriptions::types::v1::{DeployOp, TransferOp};
 use crate::pb::inscriptions::types::v1::{Block as _Block, MintOp, Operations, OperationEvent, Transaction as _Transaction, operation_event::Operation};
 use substreams::errors::Error;
 use substreams::{log, Hex};
 use substreams_ethereum::pb::eth::v2::{Block, TransactionTraceStatus};
-use tokio::runtime::Runtime;
 
 #[substreams::handlers::map]
 pub async fn map_operations(block: Block) -> Result<Operations, Error> {
     let mut operations = vec![];
-
-    let rt = Runtime::new().unwrap();
-    let api_data: String = rt.block_on(get_request()).unwrap();
-    println!("api_data = {:?}", api_data);
 
     let _block = _Block {
         number: block.number,
@@ -29,12 +23,10 @@ pub async fn map_operations(block: Block) -> Result<Operations, Error> {
         }
 
         let value = parse_value(&transaction.value);
-
-        // Verify calldata value is valid UTF8
-        let input = match validate_utf8(&transaction.input) {
-            Ok(vec) => vec.to_string(),
-            Err(_e) => continue,
-        };
+        let input = parse_input(&transaction.input);
+        if input.len() == 0 {
+            continue;
+        }
 
         let _transaction = _Transaction {
             hash: Hex(&transaction.hash).to_string(),
@@ -44,33 +36,23 @@ pub async fn map_operations(block: Block) -> Result<Operations, Error> {
             value,
             nonce: transaction.nonce,
             input: input.clone(),
+            // Get mime type (ex: "application/json")
+            mime_type: parse_mime_type(&input),
         };
-
-        //Verify data is valid and fetch mime type
-
-        let mime_data = get_mime_type(&input);
-        let (media_type, mime_subtype, mime_type) = match mime_data {
-            Ok(mime_data) => mime_data,
-            Err(_e) => continue,
-        };
-
-        println!("Media Type: {}", media_type);
-        println!("Mime Subtype: {}", mime_subtype);
-        println!("Mime Type: {}", mime_type);
 
         // Validate data
-
-        let data = validate_data(input);
-        let (p, op, tick, json_data) = match data {
+        let data = parse_json_data(&input);
+        let json_data = match data {
             Ok(data) => data,
             Err(_e) => continue,
         };
 
-        let validated_transaction = validate_transaction(api_data.to_string(), block.number.to_string(), Hex(&transaction.hash).to_string());
+        let tick = json_to_string(&json_data, "tick");
+        let op = json_to_string(&json_data, "op");
+        let p = json_to_string(&json_data, "p");
 
-        if validated_transaction == false {
-            continue;
-        }
+        log::debug!("Input: {}", input);
+
         // mint
         if op == "mint" {
             let amt = json_to_i64(&json_data, "amt");

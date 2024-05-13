@@ -42,6 +42,7 @@ message Transaction {
   string value = 5;
   uint64 nonce = 6;
   string input = 7;
+  string mime_type = 8;
 }
 
 message TransferOp {

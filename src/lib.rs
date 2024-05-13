@@ -3,4 +3,3 @@ mod sinks;
 mod pb;
 mod helpers;
 mod keys;
-mod api;

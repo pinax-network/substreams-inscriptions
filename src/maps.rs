@@ -1,13 +1,19 @@
-use crate::helpers::{json_to_i64, parse_value, get_mime_type, validate_data, validate_utf8};
+use crate::helpers::{get_mime_type, json_to_i64, parse_value, validate_data, validate_transaction, validate_utf8};
+use crate::api::get_request;
 use crate::pb::inscriptions::types::v1::{DeployOp, TransferOp};
 use crate::pb::inscriptions::types::v1::{Block as _Block, MintOp, Operations, OperationEvent, Transaction as _Transaction, operation_event::Operation};
 use substreams::errors::Error;
 use substreams::{log, Hex};
 use substreams_ethereum::pb::eth::v2::{Block, TransactionTraceStatus};
+use tokio::runtime::Runtime;
 
 #[substreams::handlers::map]
-pub fn map_operations(block: Block) -> Result<Operations, Error> {
+pub async fn map_operations(block: Block) -> Result<Operations, Error> {
     let mut operations = vec![];
+
+    let rt = Runtime::new().unwrap();
+    let api_data: String = rt.block_on(get_request()).unwrap();
+    println!("api_data = {:?}", api_data);
 
     let _block = _Block {
         number: block.number,
@@ -59,6 +65,12 @@ pub fn map_operations(block: Block) -> Result<Operations, Error> {
             Ok(data) => data,
             Err(_e) => continue,
         };
+
+        let validated_transaction = validate_transaction(api_data.to_string(), block.number.to_string(), Hex(&transaction.hash).to_string());
+
+        if validated_transaction == false {
+            continue;
+        }
         // mint
         if op == "mint" {
             let amt = json_to_i64(&json_data, "amt");

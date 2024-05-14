@@ -20,6 +20,17 @@ protobuf:
   importPaths:
     - ./proto/v1
 
+networks:
+  mainnet:
+    initialBlock:
+      balance_changes:db_out: 17502296
+  eosevm:
+    initialBlock:
+      balance_changes:db_out: 21385639
+  avalanche:
+    initialBlock:
+      balance_changes:db_out: 31918263
+
 modules:
   - name: index_transactions
     kind: blockIndex

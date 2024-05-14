@@ -29,13 +29,21 @@ graph:
 info:
 	substreams info
 
-.PHONY: gui
-gui:
-	substreams gui map_operations -e avalanche.substreams.pinax.network:443 -s 38927848 --production-mode
+.PHONY: gui-avalanche
+gui-avalanche:
+	substreams gui map_operations -e avalanche.substreams.pinax.network:443 -s 31918263 --production-mode
 
-.PHONY: gui-eos
-gui-eos:
-	substreams gui map_operations -e eosevm.substreams.pinax.network:443 -s 23071495 --production-mode
+.PHONY: gui-eosevm
+gui-eosevm:
+	substreams gui map_operations -e eosevm.substreams.pinax.network:443 -s 21385639 --production-mode
+
+.PHONY: gui-eth
+gui-eth:
+	substreams gui map_operations -e eth.substreams.pinax.network:443 -s 13502296 --production-mode
+
+.PHONY: gui-eth-dev
+gui-eth-dev:
+	substreams gui map_transactions -e eth.substreams.pinax.network:443 -s 13502304 -t +10
 
 .PHONY: setup
 setup:

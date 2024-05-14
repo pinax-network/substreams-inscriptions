@@ -1,4 +1,4 @@
-use crate::helpers::{parse_data, parse_input, parse_mime_type, parse_value};
+use crate::helpers::{parse_data, bytes_to_utf8, parse_mime_type, parse_value};
 use substreams::pb::sf::substreams::index::v1::Keys;
 use crate::pb::inscriptions::types::v1::{Transaction, Transactions};
 use substreams::errors::Error;
@@ -25,13 +25,20 @@ pub async fn map_transactions(block: Block) -> Result<Transactions, Error> {
         if transaction.status != TransactionTraceStatus::Succeeded as i32 {
             continue;
         }
-
-        let value = parse_value(&transaction.value);
-        let input = parse_input(&transaction.input);
-        if input.len() == 0 {
+        // calldata
+        if transaction.input.len() == 0 {
             continue;
         }
-        let data = parse_data(&input);
+        let value = parse_value(&transaction.value); // ETH value
+        let utf8 = bytes_to_utf8(&transaction.input);
+        if utf8.is_none() {
+            continue;
+        }
+        let mime_type = parse_mime_type(utf8.as_ref().unwrap()); // Mime type (ex: "application/json")
+        if mime_type.is_none() {
+            continue;
+        }
+        let data = parse_data(utf8.as_ref().unwrap());
         if data.is_none() {
             continue;
         }
@@ -45,7 +52,7 @@ pub async fn map_transactions(block: Block) -> Result<Transactions, Error> {
             nonce: transaction.nonce,
             input: Hex(&transaction.input).to_string(),
             data: data.unwrap().to_string(),
-            mime_type: parse_mime_type(&input), // Mime type (ex: "application/json")
+            mime_type: mime_type.unwrap().to_string(),
         });
     }
 
@@ -54,18 +61,3 @@ pub async fn map_transactions(block: Block) -> Result<Transactions, Error> {
         transactions,
     })
 }
-
-// #[substreams::handlers::map]
-// fn index_events(events: Events) -> Result<Keys, Error> {
-//     let mut keys = Keys::default();
-
-//     events.events.into_iter().for_each(|e| {
-//         if let Some(log) = e.log {
-//             evt_keys(&log).into_iter().for_each(|k| {
-//                 keys.keys.push(k);
-//             });
-//         }
-//     });
-
-//     Ok(keys)
-// }

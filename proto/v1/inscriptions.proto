@@ -8,30 +8,17 @@ message Operations {
   repeated OperationEvent operations = 1;
 }
 
-message Balances {
-  repeated Balance balances = 1;
-}
-
-message Balance {
-  string key = 1;
-  int64 balance = 2;
-}
-
 message OperationEvent {
-  Block block = 1;
-  Transaction transaction = 2;
+  Transaction transaction = 1;
   oneof operation {
-    DeployOp deploy = 3;
-    MintOp mint = 4;
-    TransferOp transfer = 5;
+    DeployOp deploy = 2;
+    MintOp mint = 3;
+    TransferOp transfer = 4;
   };
 }
 
-message Block {
-  uint64 number = 1;
-  string hash = 2;
-  string parent_hash = 3;
-  int64 timestamp = 4; // seconds
+message Transactions {
+  repeated Transaction transactions = 1;
 }
 
 message Transaction {
@@ -42,7 +29,8 @@ message Transaction {
   string value = 5;
   uint64 nonce = 6;
   string input = 7;
-  string mime_type = 8;
+  string data = 8;
+  string mime_type = 9;
 }
 
 message TransferOp {

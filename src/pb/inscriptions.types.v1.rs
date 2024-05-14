@@ -7,26 +7,10 @@ pub struct Operations {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Balances {
-    #[prost(message, repeated, tag="1")]
-    pub balances: ::prost::alloc::vec::Vec<Balance>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Balance {
-    #[prost(string, tag="1")]
-    pub key: ::prost::alloc::string::String,
-    #[prost(int64, tag="2")]
-    pub balance: i64,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct OperationEvent {
     #[prost(message, optional, tag="1")]
-    pub block: ::core::option::Option<Block>,
-    #[prost(message, optional, tag="2")]
     pub transaction: ::core::option::Option<Transaction>,
-    #[prost(oneof="operation_event::Operation", tags="3, 4, 5")]
+    #[prost(oneof="operation_event::Operation", tags="2, 3, 4")]
     pub operation: ::core::option::Option<operation_event::Operation>,
 }
 /// Nested message and enum types in `OperationEvent`.
@@ -34,26 +18,19 @@ pub mod operation_event {
     #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Operation {
-        #[prost(message, tag="3")]
+        #[prost(message, tag="2")]
         Deploy(super::DeployOp),
-        #[prost(message, tag="4")]
+        #[prost(message, tag="3")]
         Mint(super::MintOp),
-        #[prost(message, tag="5")]
+        #[prost(message, tag="4")]
         Transfer(super::TransferOp),
     }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Block {
-    #[prost(uint64, tag="1")]
-    pub number: u64,
-    #[prost(string, tag="2")]
-    pub hash: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
-    pub parent_hash: ::prost::alloc::string::String,
-    /// seconds
-    #[prost(int64, tag="4")]
-    pub timestamp: i64,
+pub struct Transactions {
+    #[prost(message, repeated, tag="1")]
+    pub transactions: ::prost::alloc::vec::Vec<Transaction>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -73,6 +50,8 @@ pub struct Transaction {
     #[prost(string, tag="7")]
     pub input: ::prost::alloc::string::String,
     #[prost(string, tag="8")]
+    pub data: ::prost::alloc::string::String,
+    #[prost(string, tag="9")]
     pub mime_type: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

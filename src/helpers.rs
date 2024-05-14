@@ -1,5 +1,4 @@
 use std::str;
-use serde_json::Value;
 use substreams::Hex;
 use substreams_ethereum::pb::eth::v2::BigInt;
 
@@ -44,9 +43,8 @@ pub fn parse_value(value: &Option<BigInt>) -> String {
     }
 }
 
-pub fn parse_json_data(input: &String) -> Result<Value, serde_json::Error> {
-    let json_str = input.splitn(2, ',').nth(1).unwrap_or_default();
-    return serde_json::from_str(json_str)
+pub fn parse_data(input: &str) -> Option<&str> {
+    input.splitn(2, ',').nth(1)
 }
 
 pub fn parse_input(data: &Vec<u8>) -> String {
@@ -142,7 +140,6 @@ mod tests {
 
         match data {
             Ok(data) => {
-
                 let data_map = data.as_object().expect("Data must be an object");
                 let data_str = data_map.get("value").expect("Expected 'value' field").as_str().expect("Expected 'value' to be a string");
                 let data_hex = Hex::decode(data_str.as_bytes()).expect("Failed to decode hex string");
@@ -157,11 +154,11 @@ mod tests {
     }
 
     #[test]
-    fn parse_json_data() {
+    fn parse_data() {
         let str = "data:,{\"p\":\"asc-20\",\"op\":\"deploy\",\"tick\":\"xai\",\"max\":\"2.1e+29\",\"lim\":\"100000000000000\"}";
-        let data = super::parse_json_data(&str.to_string());
+        let data = super::parse_data(str);
 
-        match data {
+        match serde_json::from_str(&data.unwrap()) {
             Ok(json_data) => {
                 let tick = super::json_to_string(&json_data, "tick");
                 let op = super::json_to_string(&json_data, "op");

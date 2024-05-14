@@ -1,23 +1,22 @@
-use substreams::errors::Error;
+use substreams::{errors::Error, pb::substreams::Clock};
 use substreams_database_change::{change::AsString, pb::database::{table_change, DatabaseChanges}};
 use crate::{keys::to_key, pb::inscriptions::types::v1::{operation_event, Operations}};
 
 #[substreams::handlers::map]
-pub fn db_out(operations: Operations) -> Result<DatabaseChanges, Error> {
+pub fn db_out(clock: Clock, operations: Operations) -> Result<DatabaseChanges, Error> {
     let mut tables = DatabaseChanges::default();
+    let timestamp = clock.timestamp.unwrap().seconds.to_string();
 
     for event in operations.operations {
         let transaction = event.transaction.unwrap();
-        let block = event.block.unwrap();
         let key = to_key(&transaction);
 
         let row = tables
             .push_change("events", key, 0, table_change::Operation::Create)
             // block information
-            .change("block_hash", ("", block.hash.as_str()))
-            .change("block_number", ("", block.number.as_string().as_str()))
-            .change("block_timestamp", ("", block.timestamp.as_string().as_str()))
-            .change("block_parent_hash", ("", block.parent_hash.as_str()))
+            .change("block_id", ("", clock.id.as_str()))
+            .change("block_num", ("", clock.number.as_string().as_str()))
+            .change("timestamp", ("", timestamp.as_str()))
 
             // transaction information
             .change("transaction_hash", ("", transaction.hash.as_str()))

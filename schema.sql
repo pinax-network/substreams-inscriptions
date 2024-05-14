@@ -20,10 +20,9 @@ CREATE TABLE IF NOT EXISTS cursors
 CREATE TABLE IF NOT EXISTS transfer_events
 (
     id                  String,
-    block_hash          String,
-    block_number        UInt64,
-    block_timestamp     UInt32,
-    block_parent_hash   String,
+    block_id            String,
+    block_num           UInt64,
+    timestamp           UInt32,
     transaction_hash    String,
     transaction_value   UInt256,
     transaction_index   UInt32,
@@ -41,10 +40,9 @@ CREATE TABLE IF NOT EXISTS transfer_events
 CREATE TABLE IF NOT EXISTS mint_events
 (
     id                  String,
-    block_hash          String,
-    block_number        UInt64,
-    block_timestamp     UInt32,
-    block_parent_hash   String,
+    block_id            String,
+    block_num           UInt64,
+    timestamp           UInt32,
     transaction_hash    String,
     transaction_value   UInt256,
     transaction_index   UInt32,
@@ -62,10 +60,9 @@ CREATE TABLE IF NOT EXISTS mint_events
 CREATE TABLE IF NOT EXISTS deploy_events
 (
     id                  String,
-    block_hash          String,
-    block_number        UInt64,
-    block_timestamp     UInt32,
-    block_parent_hash   String,
+    block_id            String,
+    block_num           UInt64,
+    timestamp           UInt32,
     transaction_hash    String,
     transaction_value   UInt256,
     transaction_index   UInt32,

@@ -42,37 +42,68 @@ Version: v0.1.0
 Doc: Inscriptions
 Modules:
 ----
-Name: map_operations
+Name: index_transactions
+Initial block: 0
+Kind: index
+Input: map: map_transactions
+Output Type: proto:sf.substreams.index.v1.Keys
+Hash: 78864d10ee5849a45d8bd7d38ccb2a545f712281
+
+Name: map_transactions
 Initial block: 0
 Kind: map
 Input: source: sf.ethereum.type.v2.Block
+Output Type: proto:inscriptions.types.v1.Transactions
+Hash: 5fd86381d6bd2eb3284c70c71ed50ffe01dd83e9
+Doc:  Extracts Inscription transactions from the block
+
+Name: map_operations
+Initial block: 0
+Kind: map
+Input: map: map_transactions
+Block Filter: (using *index_transactions*): `&{inscriptions}`
 Output Type: proto:inscriptions.types.v1.Operations
-Hash: 521f8cba3fec40e7efa55971262ecb3ed5933d6b
+Hash: 507762a25fc2a9f4ad3d79760b9d41655564cee8
 Doc:  Extracts Inscription operation events from the block
 
 Name: db_out
 Initial block: 0
 Kind: map
+Input: source: sf.substreams.v1.Clock
 Input: map: map_operations
 Output Type: proto:sf.substreams.sink.database.v1.DatabaseChanges
-Hash: a485e5e3b9b529a86a35d0c0ef05ed992dcf2768
+Hash: 8f2aba00094ab3b8905e1827151647d3de6cbdb6
 
 Network: avalanche
+
+Networks:
+  avalanche:
+    Initial Blocks:
+      - balance_changes:db_out: 31918263
+
+  mainnet:
+    Initial Blocks:
+      - balance_changes:db_out: 17502296
+
+  eosevm:
+    Initial Blocks:
+      - balance_changes:db_out: 21385639
 
 Sink config:
 ----
 type: sf.substreams.sink.sql.v1.Service
 configs:
-- schema: (2295 bytes) MD5SUM: 66f73da2b832ecf270e501fa1fc2305a [LOADED_FILE]
+- schema: (2199 bytes) MD5SUM: c0f1cc0d5bc84410155154545fd0ac32 [LOADED_FILE]
 - dbt_config:
   - files: (empty) [ZIPPED_FOLDER]
   - run_interval_seconds: 0
   - enabled: false
+- wire_protocol_access: false
 - hasura_frontend:
   - enabled: false
 - postgraphile_frontend:
   - enabled: false
-- engine: 2
-- rest_frontend:
+- pgweb_frontend:
   - enabled: false
+- engine: 2
 ```

@@ -21,37 +21,12 @@ protobuf:
     - ./proto/v1
 
 modules:
-  # - name: index_events_and_calls
-  #   kind: blockIndex
-  #   inputs:
-  #     - map: all_events
-  #     - map: all_calls
-  #   output:
-  #     type: proto:sf.substreams.index.v1.Keys
-  #   doc: |
-  #     `index_events_and_calls` sets the following keys on the block:
-  #      * Event signatures evt_sig:0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef (signature in hex, prefixed by 0x)
-  #      * Event address    evt_addr:0x0123456789abcdef0123456789abcdef01234567 (address in hex, prefixed by 0x)
-  #      * Call contract    call_to:0x0123456789abcdef0123456789abcdef01234567 (contract address in hex, prefixed by 0x)
-  #      * Caller           call_from:0x0123456789abcdef0123456789abcdef01234567 (caller address in hex, prefixed by 0x)
-  #      * Call method      call_method:0x01234567 (4 bytes of method signature in hex, prefixed by 0x)
-
-  # - name: map_inscriptions
-  #   kind: map
-  #   blockFilter:
-  #     module: index_events_and_calls
-  #     query:
-  #       params: true
-  #   inputs:
-  #     - params: string
-  #     - source: sf.ethereum.type.v2.Block
-  #   output:
-  #     type: proto:sf.substreams.ethereum.v1.Transactions
-  #   doc: |
-  #     `filtered_transactions` reads from ethereum blocks and applies a filter on the events (addresses and signatures) as well as calls (from, to and method).
-  #     Supported operators are: logical or `||`, logical and `&&` and parenthesis: `()`
-  #     Addresses and signatures to match must be written as 0x-prefixed hexadecimal, lowercase, prefixed by `evt_addr:`, `evt_sig:`, `call_to:`, `call_from:` or `call_method:`.
-  #     Example: `((evt_addr:0x1234... || evt_addr:0x5678...) && evt_sig:0xdeadbeef...) || call_to:0x01010101...`
+  - name: index_transactions
+    kind: blockIndex
+    inputs:
+      - map: map_transactions
+    output:
+      type: proto:sf.substreams.index.v1.Keys
 
   - name: map_transactions
     kind: map
@@ -66,6 +41,11 @@ modules:
     doc: Extracts Inscription operation events from the block
     inputs:
       - map: map_transactions
+    blockFilter:
+      module: index_transactions
+      query:
+        string: inscriptions
+        params: false
     output:
       type: proto:inscriptions.types.v1.Operations
 

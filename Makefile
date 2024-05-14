@@ -31,11 +31,11 @@ info:
 
 .PHONY: gui
 gui:
-	substreams gui db_out -e avalanche.substreams.pinax.network:443 -s 38927848
+	substreams gui map_operations -e avalanche.substreams.pinax.network:443 -s 38927848 --production-mode
 
 .PHONY: gui-eos
 gui-eos:
-	substreams gui db_out -e eosevm.substreams.pinax.network:443 -s 23071495
+	substreams gui map_operations -e eosevm.substreams.pinax.network:443 -s 23071495 --production-mode
 
 .PHONY: setup
 setup:

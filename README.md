@@ -24,9 +24,13 @@ $ make gui
 
 ```mermaid
 graph TD;
+  map_transactions --> index_transactions;
+  map_transactions[map: map_transactions];
+  sf.ethereum.type.v2.Block[source: sf.ethereum.type.v2.Block] --> map_transactions;
   map_operations[map: map_operations];
-  sf.ethereum.type.v2.Block[source: sf.ethereum.type.v2.Block] --> map_operations;
+  map_transactions --> map_operations;
   db_out[map: db_out];
+  sf.substreams.v1.Clock[source: sf.substreams.v1.Clock] --> db_out;
   map_operations --> db_out;
 ```
 

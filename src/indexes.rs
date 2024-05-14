@@ -1,8 +1,20 @@
 use crate::helpers::{parse_data, parse_input, parse_mime_type, parse_value};
+use substreams::pb::sf::substreams::index::v1::Keys;
 use crate::pb::inscriptions::types::v1::{Transaction, Transactions};
 use substreams::errors::Error;
 use substreams::{log, Hex};
 use substreams_ethereum::pb::eth::v2::{Block, TransactionTraceStatus};
+
+#[substreams::handlers::map]
+fn index_transactions(transactions: Transactions) -> Result<Keys, Error> {
+    let mut keys = Keys::default();
+
+    if transactions.transactions.len() > 0 {
+        keys.keys.push("inscriptions".to_string());
+    }
+
+    Ok(keys)
+}
 
 #[substreams::handlers::map]
 pub async fn map_transactions(block: Block) -> Result<Transactions, Error> {

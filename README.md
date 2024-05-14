@@ -25,7 +25,7 @@ $ make gui
 ```mermaid
 graph TD;
   map_transactions --> index_transactions;
-  index_transactions -.-> map_operations;
+  index_transactions -.-> |blockIndex| map_operations;
   map_transactions[map: map_transactions];
   sf.ethereum.type.v2.Block[source: sf.ethereum.type.v2.Block] --> map_transactions;
   map_operations[map: map_operations];
